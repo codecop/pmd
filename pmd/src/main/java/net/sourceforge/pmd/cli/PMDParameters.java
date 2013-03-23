@@ -62,7 +62,7 @@ public class PMDParameters {
 	private String reportfile = null;
 	
 	@Parameter(names = {"-version","-v"}, description = "specify version of a language PMD should use")
-	private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
+   private String version = Language.getDefaultLanguage().getDefaultVersion().getVersion();
 	
 	@Parameter(names = {"-language", "-l"}, description = "specify version of a language PMD should use")
 	private String language = Language.getDefaultLanguage().getTerseName();
@@ -118,7 +118,11 @@ public class PMDParameters {
     	configuration.setSuppressMarker(params.getSuppressmarker());
     	configuration.setThreads(params.getThreads()); 
     	for ( LanguageVersion language : LanguageVersion.findVersionsForLanguageTerseName( params.getLanguage() ) ) {
-        	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(language.getLanguage().getVersion(params.getVersion()));    		
+        	LanguageVersion languageVersion = language.getLanguage().getVersion(params.getVersion());
+         if (languageVersion == null) {
+            languageVersion = language.getLanguage().getDefaultVersion();
+         }
+        	configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
     	}
         try {
             configuration.prependClasspath(params.getAuxclasspath());
